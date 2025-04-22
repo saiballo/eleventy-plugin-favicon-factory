@@ -5,7 +5,7 @@
 * Created: 15/04/2024 (18:41:03)
 * Created by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
-* Last update: 22/04/2025 (15:34:34)
+* Last update: 22/04/2025 (16:11:28)
 * Updated by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
 * Copyleft: 2024 - Tutti i diritti riservati
@@ -28,7 +28,7 @@ const defaultConfig = {
 	"manifestGenerate": true,
 	// manifest file name
 	"manifestName": "manifest",
-	// output folder for manifest file. it's relative to "dist" project folder. leave it empty to put in root dist
+	// output folder for the manifest file. it's relative to "dist" project folder. leave it empty to put in root dist
 	"manifestOutputFolder": "",
 	// manifest data
 	"manifestData": {

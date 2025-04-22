@@ -34,7 +34,6 @@
 	},
 	"dependencies": {
 		"sharp": "^0.34.1",
-		"sharp-ico": "^0.1.5",
-		"svg-to-ico": "^1.0.15"
+		"sharp-ico": "^0.1.5"
 	}
 }
