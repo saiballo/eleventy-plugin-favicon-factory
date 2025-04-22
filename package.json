@@ -1,0 +1,45 @@
+{
+	"name": "@saiballo/eleventy-plugin-favicon-factory",
+	"version": "1.0.0",
+	"description": "A plugin for 11ty that creates favicons and a manifest",
+	"main": "main.js",
+	"keywords": [
+		"11ty",
+		"eleventy",
+		"eleventy-plugin",
+		"favicon",
+		"manifest"
+	],
+	"license": "MIT",
+	"author": {
+		"name": "Lorenzo \"Saibal\" Forti",
+		"email": "lorenzo.forti@gmail.com"
+	},
+	"homepage": "https://github.com/saiballo/eleventy-plugin-svg-embed#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/saiballo/eleventy-plugin-svg-embed.git"
+	},
+	"bugs": {
+		"url": "https://github.com/saiballo/eleventy-plugin-svg-embed"
+	},
+	"engines": {
+		"node": ">=16"
+	},
+	"11ty": {
+		"compatibility": ">=2.0.0"
+	},
+	"scripts": {
+		"refresh": "rm -rf node_modules && rm package-lock.json && npm install"
+	},
+	"dependencies": {
+		"sharp": "^0.34.1",
+		"sharp-ico": "^0.1.5",
+		"svg-to-ico": "^1.0.15"
+	},
+	"test": {
+		"test": "https://www.npmjs.com/package/svg-to-ico",
+		"png-to-ico": "^2.1.8",
+		"sharp": "^0.33.5"
+	}
+}
