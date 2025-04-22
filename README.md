@@ -12,7 +12,7 @@
 
 ## Installation
 
-Available on [npm](https://www.npmjs.com/package/@saiballo/eleventy-plugin-svg-embed):
+Available on [npm](https://www.npmjs.com/package/@saiballo/eleventy-plugin-favicon-factory):
 
 ```sh
 npm install @saiballo/eleventy-plugin-favicon-factory --save
