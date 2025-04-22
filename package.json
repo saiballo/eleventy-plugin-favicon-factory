@@ -1,6 +1,6 @@
 {
 	"name": "@saiballo/eleventy-plugin-favicon-factory",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A plugin for 11ty that creates favicons and a manifest",
 	"main": "main.js",
 	"keywords": [
