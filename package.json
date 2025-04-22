@@ -15,13 +15,13 @@
 		"name": "Lorenzo \"Saibal\" Forti",
 		"email": "lorenzo.forti@gmail.com"
 	},
-	"homepage": "https://github.com/saiballo/eleventy-plugin-svg-embed#readme",
+	"homepage": "https://github.com/saiballo/eleventy-plugin-favicon-factory#readme",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/saiballo/eleventy-plugin-svg-embed.git"
+		"url": "git+https://github.com/saiballo/eleventy-plugin-favicon-factory.git"
 	},
 	"bugs": {
-		"url": "https://github.com/saiballo/eleventy-plugin-svg-embed"
+		"url": "https://github.com/saiballo/eleventy-plugin-favicon-factory"
 	},
 	"engines": {
 		"node": ">=16"
@@ -36,10 +36,5 @@
 		"sharp": "^0.34.1",
 		"sharp-ico": "^0.1.5",
 		"svg-to-ico": "^1.0.15"
-	},
-	"test": {
-		"test": "https://www.npmjs.com/package/svg-to-ico",
-		"png-to-ico": "^2.1.8",
-		"sharp": "^0.33.5"
 	}
 }
