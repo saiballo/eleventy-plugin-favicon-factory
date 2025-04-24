@@ -5,7 +5,7 @@
 * Created: 15/04/2024 (18:41:03)
 * Created by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
-* Last update: 22/04/2025 (13:39:25)
+* Last update: 24/04/2025 (15:35:49)
 * Updated by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
 * Copyleft: 2024 - Tutti i diritti riservati
@@ -144,17 +144,21 @@ const favicon = (eleventyconfig, pluginconfig) => {
 
 		try {
 
+			// check if the source image exists
+			const isValidSource = await util.isFile(sourceimg);
+			// if it doesn't exist, i can't proceed
+			if (!isValidSource) {
+
+				toLog("source image not found. can't process favicon list", "error");
+
+				return "[plugin-favicon-factory - source image not found]";
+			}
+
 			const outputDir = path.join(eleventyconfig.dir.output, pluginconfig.outputFolder);
 			const isOutputFolder = await util.isFolder(outputDir);
 
 			// if the folder didn't exist, it was created and therefore the favicons must be processed or the build is done
 			if (!isOutputFolder || process.env.NODE_ENV === "production") {
-
-				// check if the source image exists
-				const isValidSource = await util.isFile(sourceimg);
-
-				// if it doesn't exist, i can't proceed
-				if (!isValidSource) return false;
 
 				toLog("starting favicons creation...", "info");
 
@@ -203,6 +207,8 @@ const favicon = (eleventyconfig, pluginconfig) => {
 		} catch (err) {
 
 			toLog(`${err["message"]}`, "error");
+
+			return `[plugin-favicon-factory - ${err["message"]}]`;
 		}
 	});
 };
