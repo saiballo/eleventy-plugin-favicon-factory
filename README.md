@@ -107,6 +107,10 @@ In your template you can add a shortcut (the example below is for Nunjucks). The
 {% favicon "path/to/your/image/favicon.svg" %}
 ```
 
+## Note
+
+If an error occurred or you want to regenerate all the icons, always remember to delete the destination folder "outputFolder" if it has already been created — otherwise, the icons will not be generated.
+
 ## Team ARMADA 429
 <img src="https://raw.githubusercontent.com/saiballo/saiballo/refs/heads/master/armada429.png" width="100" height="100">
 
