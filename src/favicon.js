@@ -5,7 +5,7 @@
 * Created: 15/04/2024 (18:41:03)
 * Created by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
-* Last update: 24/04/2025 (15:35:49)
+* Last update: 14/05/2025 (10:00:25)
 * Updated by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
 * Copyleft: 2024 - Tutti i diritti riservati
@@ -78,7 +78,7 @@ const getHtmlCode = (eleventyconfig, pluginconfig) => {
 
 	const htmlCode = [
 		// universal fallback
-		`<link rel="shortcut icon" href="${filePath}/${pluginconfig.prefixName}.ico" type="image/x-icon"></link>`,
+		`<link rel="shortcut icon" href="${filePath}/${pluginconfig.prefixName}.ico" type="image/x-icon">`,
 		// modern browsers
 		`<link rel="icon" href="${filePath}/${pluginconfig.prefixName}.svg" type="image/svg+xml">`
 	];
@@ -96,7 +96,7 @@ const getHtmlCode = (eleventyconfig, pluginconfig) => {
 
 	if (pluginconfig.sizeList.includes(512)) {
 
-		htmlCode.push(`<link rel="apple-touch-icon" href="${filePath}/apple-touch-icon.png">`);
+		htmlCode.push(`<link rel="apple-touch-icon" href="${filePath}/${pluginconfig.prefixName}-512x512.png">`);
 	}
 
 	// apple icon
@@ -104,7 +104,7 @@ const getHtmlCode = (eleventyconfig, pluginconfig) => {
 
 		if ([57, 72, 76, 114, 120, 144, 152, 180].includes(size)) {
 
-			htmlCode.push(`<link rel="apple-touch-icon" sizes="${size}x${size}" href="${filePath}/apple-touch-icon-${size}x${size}.png">`);
+			htmlCode.push(`<link rel="apple-touch-icon" sizes="${size}x${size}" href="${filePath}/${pluginconfig.prefixName}-${size}x${size}.png">`);
 		}
 	});
 
