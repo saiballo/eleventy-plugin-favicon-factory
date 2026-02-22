@@ -1,6 +1,6 @@
 {
 	"name": "@saiballo/eleventy-plugin-favicon-factory",
-	"version": "1.0.5",
+	"version": "1.1.0",
 	"description": "A plugin for 11ty that creates favicons and a manifest",
 	"main": "main.js",
 	"keywords": [
@@ -33,7 +33,7 @@
 		"refresh": "rm -rf node_modules && rm package-lock.json && npm install"
 	},
 	"dependencies": {
-		"sharp": "^0.34.1",
+		"sharp": "^0.34.5",
 		"sharp-ico": "^0.1.5"
 	}
 }

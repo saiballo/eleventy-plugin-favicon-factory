@@ -5,7 +5,7 @@
 * Created: 15/04/2024 (18:41:03)
 * Created by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
-* Last update: 14/05/2025 (10:00:25)
+* Last update: 21/02/2026 (18:42:55)
 * Updated by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
 * Copyleft: 2024 - Tutti i diritti riservati
@@ -34,7 +34,7 @@ const createManifest = async (eleventyconfig, pluginconfig, sizelist) => {
 		const filePath = util.getFilePath(pluginconfig.imgPathHref, pluginconfig.outputFolder);
 
 		// if missing, create the output folder
-		await util.isFolder(path.join(eleventyconfig.dir.output, pluginconfig.manifestOutputFolder));
+		await util.checkFolder(path.join(eleventyconfig.dir.output, pluginconfig.manifestOutputFolder));
 
 		// create the icon list filtering only 3 sizes
 		const iconList = sizelist.filter((size) => [192, 256, 512].includes(size)).map((size) => ({
@@ -75,6 +75,7 @@ const createManifest = async (eleventyconfig, pluginconfig, sizelist) => {
 const getHtmlCode = (eleventyconfig, pluginconfig) => {
 
 	const filePath = util.getFilePath(pluginconfig.imgPathHref, pluginconfig.outputFolder);
+	const sizeList = Array.isArray(pluginconfig.sizeList) ? pluginconfig.sizeList : [];
 
 	const htmlCode = [
 		// universal fallback
@@ -84,23 +85,23 @@ const getHtmlCode = (eleventyconfig, pluginconfig) => {
 	];
 
 	// fallback some desktop browsers and modern mobile browsers: Chrome/Edge mobile
-	if (pluginconfig.sizeList.includes(32)) {
+	if (sizeList.includes(32)) {
 
 		htmlCode.push(`<link rel="icon" type="image/png" sizes="32x32" href="${filePath}/${pluginconfig.prefixName}-32x32.png">`);
 	}
 
-	if (pluginconfig.sizeList.includes(16)) {
+	if (sizeList.includes(16)) {
 
 		htmlCode.push(`<link rel="icon" type="image/png" sizes="16x16" href="${filePath}/${pluginconfig.prefixName}-16x16.png">`);
 	}
 
-	if (pluginconfig.sizeList.includes(512)) {
+	if (sizeList.includes(512)) {
 
 		htmlCode.push(`<link rel="apple-touch-icon" href="${filePath}/${pluginconfig.prefixName}-512x512.png">`);
 	}
 
 	// apple icon
-	pluginconfig.sizeList.forEach((size) => {
+	sizeList.forEach((size) => {
 
 		if ([57, 72, 76, 114, 120, 144, 152, 180].includes(size)) {
 
@@ -133,83 +134,103 @@ const getHtmlCode = (eleventyconfig, pluginconfig) => {
  */
 const favicon = (eleventyconfig, pluginconfig) => {
 
-	eleventyconfig.addShortcode("favicon", async (sourceimg) => {
+	let compilePromise = null;
+	let devOnlyMsgShown = false;
 
-		if (pluginconfig.runOnlyDevMode === true && process.env.NODE_ENV === "production") {
+	const skipProdCompile = () => {
 
-			toLog("favicon compilation is required only in dev mode", "info");
+		if (pluginconfig.runOnlyDevMode === true && process.env.NODE_ENV === "production") return true;
 
-			return getHtmlCode(eleventyconfig, pluginconfig);
+		return false;
+	};
+
+	const compileOnce = async (sourceimg) => {
+
+		const isValidSource = await util.isFile(sourceimg);
+
+		if (isValidSource === false) {
+
+			toLog("source image not found. can't process favicon list", "error");
+			return;
 		}
 
-		try {
+		const outputDir = path.join(eleventyconfig.dir.output, pluginconfig.outputFolder);
+		const isOutputFolder = await util.checkFolder(outputDir);
 
-			// check if the source image exists
-			const isValidSource = await util.isFile(sourceimg);
-			// if it doesn't exist, i can't proceed
-			if (!isValidSource) {
+		// stop if output folder exists
+		if (isOutputFolder === true) {
 
-				toLog("source image not found. can't process favicon list", "error");
+			toLog("favicon shortcode detected but output folder already exists. favicon generation skipped", "info");
 
-				return "[plugin-favicon-factory - source image not found]";
-			}
+			return;
+		}
 
-			const outputDir = path.join(eleventyconfig.dir.output, pluginconfig.outputFolder);
-			const isOutputFolder = await util.isFolder(outputDir);
+		toLog("starting favicons creation...", "info");
 
-			// if the folder didn't exist, it was created and therefore the favicons must be processed or the build is done
-			if (!isOutputFolder || process.env.NODE_ENV === "production") {
+		util.copyFile(sourceimg, `${outputDir}/${pluginconfig.prefixName}.svg`);
 
-				toLog("starting favicons creation...", "info");
+		const isValidSizeList = Array.isArray(pluginconfig.sizeList) && pluginconfig.sizeList.length > 0;
+		const sizeList = [
+			...isValidSizeList ? pluginconfig.sizeList : [],
+			...[512]
+		];
+		const uniqueSizeList = [...new Set(sizeList)];
 
-				util.copyFile(sourceimg, `${outputDir}/${pluginconfig.prefixName}.svg`);
+		await Promise.all(uniqueSizeList.map((size) => {
 
-				const isValidSizeList = Array.isArray(pluginconfig.sizeList) && pluginconfig.sizeList.length > 0;
-				const sizeList = [
-					...isValidSizeList ? pluginconfig.sizeList : [],
-					...[512]
-				];
-				const uniqueSizeList = [...new Set(sizeList)];
+			return sharp(sourceimg).resize(size).toFile(`${outputDir}/${pluginconfig.prefixName}-${size}x${size}.png`);
+		}));
 
-				await Promise.all(
-					uniqueSizeList.map((size) => sharp(sourceimg).resize(size).toFile(`${outputDir}/${pluginconfig.prefixName}-${size}x${size}.png`))
-				);
+		// check if the 512x512 image exists
+		const png512Path = `${outputDir}/${pluginconfig.prefixName}-512x512.png`;
+		const isValid512 = await util.isFile(png512Path);
 
-				// check if the 512x512 image exists
-				const png512Path = `${outputDir}/${pluginconfig.prefixName}-512x512.png`;
-				const isValid512 = await util.isFile(png512Path);
+		if (isValid512 === false) return;
 
-				if (!isValid512) return false;
-
-				// create the icon file format
-				await sharpIco.sharpsToIco(
-					[
-						sharp(`${outputDir}/${pluginconfig.prefixName}-512x512.png`)
-					],
-					`${outputDir}/${pluginconfig.prefixName}.ico`,
-					{
-						"sizes": [64, 32, 24],
-						"resizeOptions": {
-							"fit": "cover"
-						}
-					}
-				);
-
-				// if needed, create the manifest file
-				if (pluginconfig.manifestGenerate) {
-
-					await createManifest(eleventyconfig, pluginconfig, uniqueSizeList);
+		// create the icon file format
+		await sharpIco.sharpsToIco(
+			[
+				sharp(png512Path)
+			],
+			`${outputDir}/${pluginconfig.prefixName}.ico`,
+			{
+				"sizes": [64, 32, 24],
+				"resizeOptions": {
+					"fit": "cover"
 				}
 			}
+		);
+
+		if (pluginconfig.manifestGenerate === true) {
+
+			await createManifest(eleventyconfig, pluginconfig, uniqueSizeList);
+		}
+	};
+
+	eleventyconfig.addShortcode("favicon", async (sourceimg) => {
+
+		// log once in production
+		if (skipProdCompile() === true) {
+
+			if (devOnlyMsgShown === false) {
+
+				toLog("favicon compilation is required only in dev mode", "info");
+
+				devOnlyMsgShown = true;
+			}
 
 			return getHtmlCode(eleventyconfig, pluginconfig);
-
-		} catch (err) {
-
-			toLog(`${err["message"]}`, "error");
-
-			return `[plugin-favicon-factory - ${err["message"]}]`;
 		}
+
+		// memoization: only once compile action
+		if (compilePromise === null) {
+
+			compilePromise = compileOnce(sourceimg);
+		}
+
+		await compilePromise;
+
+		return getHtmlCode(eleventyconfig, pluginconfig);
 	});
 };
 

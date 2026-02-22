@@ -5,7 +5,7 @@
 * Created: 15/04/2024 (18:41:03)
 * Created by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
-* Last update: 22/04/2025 (13:38:40)
+* Last update: 21/02/2026 (18:43:41)
 * Updated by: Lorenzo Saibal Forti <lorenzo.forti@gmail.com>
 *
 * Copyleft: 2024 - Tutti i diritti riservati
@@ -57,12 +57,12 @@ const copyFile = async (source, destination) => {
 };
 
 /**
- * The function `isFolder` checks if a folder exists, creates it if it doesn't, and logs any errors encountered.
+ * The function `checkFolder` checks if a folder exists, creates it if it doesn't, and logs any errors encountered.
  * @param folder - it represents the path to a directory that you want to check if it exists. If the directory exists, the function will return `true`.
  * If the directory does not exist, the function will create it using `fsp.mkdir` with the `recursive
  * @returns If the folder exists, `true` is being returned. If the folder does not exist and is successfully created, `false` is being returned.
  */
-const isFolder = async (folder) => {
+const checkFolder = async (folder) => {
 
 	try {
 
@@ -73,7 +73,7 @@ const isFolder = async (folder) => {
 			"recursive": true
 		});
 
-		toLog("output folder created. Processing favicons...", "info");
+		toLog("output folder created. processing favicons...", "info");
 
 		return false;
 
@@ -117,5 +117,5 @@ module["exports"] = {
 	getFilePath,
 	copyFile,
 	isFile,
-	isFolder
+	checkFolder
 };
